@@ -49,4 +49,5 @@ npm.cmd run test:wechat
 - 安装的开发者工具版本：Stable 2.01.2510280。GUI 可看到项目选择页，但导入动作未得到成功确认。
 - `cli.bat open --project ...` 与 `cli.bat islogin` 在连接端口 14487 时失败，完整错误：`× #initialize-error: wait IDE port timeout`。较早初始化还返回 `connect ECONNREFUSED 127.0.0.1:14487`。
 - `miniprogram-automator.launch` 在 Node 23 直接启动 `.bat` 失败：`Error: Failed to launch wechat web devTools, please make sure cliPath is correctly specified`。验收脚本已改为连接模式，规避此启动方式。
+- 连接模式执行 `npm.cmd run test:wechat` 返回：`Error: Failed connecting to ws://127.0.0.1:9420, check if target project window is opened with automation enabled`。
 - 本次没有取得真实微信页面运行或截图证据，任务 01 保留待验收状态，不将模拟测试当成微信验证。

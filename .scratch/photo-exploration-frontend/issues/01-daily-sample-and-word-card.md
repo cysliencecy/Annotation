@@ -23,3 +23,4 @@ Parent: [Development spec](../spec.md)
 
 - 2026-10-30：原生小程序工程和任务 01 的页面行为已实现，页面模拟 4/4 通过、类型检查通过。运行步骤、技术选择及完整工具错误见 [小程序说明](../../../miniprogram/README.md)。
 - 2026-10-30：微信工具 CLI 报 `#initialize-error: wait IDE port timeout`，自动化连接失败，尚未获得真实小程序运行证据。第 1、3 项保留待微信内验收；本任务不标记 done，后续依赖任务暂不启动。
+- 2026-10-30：以初始提交 `f4c4df3` 为基点并行完成 code-review。Standards：0 项发现。Spec：无代码缺陷或范围扩张，以上两项真实运行验收仍未完成。新增 Git 属性保护历史 JSON 的字节完整性。

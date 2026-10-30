@@ -1,0 +1,3 @@
+# Preserve the original recognition JSON byte for byte, including on Windows.
+miniprogram/fixtures/*.json -text
+miniprogram/assets/*.jpg binary
