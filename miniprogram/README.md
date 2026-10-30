@@ -49,6 +49,8 @@ npm.cmd run test:wechat
 
 当前页面按[视觉规格](../.scratch/prototype-visual-fidelity/spec.md)还原已有 daily1 原型。默认、选中、关闭截图和布局测量统一写入 `.scratch/prototype-visual-fidelity/evidence/`；[验收记录](../.scratch/prototype-visual-fidelity/acceptance.md)说明结果与未完成项，[对照页](../.scratch/prototype-visual-fidelity/comparison.html)可并排查看原型与实际截图。较早 `.artifacts/` 截图属于修正前证据，不代表当前页面。
 
+视觉规格已完成 390px 及 375px 微信工具验收。默认 `test:wechat` 需要模拟器实际宽 390px；375px 时设置 `WECHAT_VIEWPORT=375`，证据单独写入 `evidence/375/`，还会检查滚动后的解释和关闭区域。环境变量只指定验收目标，不会调整或伪造模拟器宽度。详细 PowerShell 命令见验收记录。真机仍未验证。
+
 ## 本次验证记录（2026-10-30）
 
 - 页面模拟测试：4/4 通过；静态类型检查通过。
