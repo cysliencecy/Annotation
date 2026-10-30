@@ -43,3 +43,7 @@
 .card-description { font-size: 12px; line-height: 20px; color: var(--muted); }
 .card-close { position: absolute; right: 8px; top: 6px; display: block; box-sizing: border-box; width: 36px !important; min-width: 0; height: 36px !important; padding: 0 !important; margin: 0; border: 0; background: transparent; color: var(--muted); font-size: 25px !important; font-weight: 400; line-height: 36px !important; }
 .provenance-note { margin-top: 16px; color: var(--muted); font-size: 11px; line-height: 18px; }
+.discovery-dot { position: absolute; z-index: 3; display: flex; align-items: center; justify-content: center; box-sizing: border-box; width: 36px !important; height: 36px !important; padding: 0 !important; margin: 0; background: transparent; border: 0; transform: translate(-50%, -50%); }
+.dot-core { box-sizing: border-box; width: 14px; height: 14px; background: currentColor; border: 2px solid white; border-radius: 50%; box-shadow: 0 1px 6px #0004; }
+.choose-sample { display: block; box-sizing: border-box; width: 100% !important; height: 42px !important; margin: 16px 0 0; padding: 0 !important; border: 1px solid #d7d7d7; border-radius: 6px; background: white; color: var(--ink); font-size: 14px !important; line-height: 40px !important; font-weight: 400; }
+.card-collapse { display: inline-block; width: auto !important; min-width: 0; margin: 0; padding: 5px 0 !important; border: 0; border-radius: 0; background: transparent; font-size: 12px !important; font-weight: 600; line-height: 18px !important; }

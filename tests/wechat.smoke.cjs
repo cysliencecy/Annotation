@@ -3,6 +3,7 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const fs = require('node:fs');
 const automator = require('miniprogram-automator');
+const { createScreenshotRecorder } = require('./wechat-screenshots.cjs');
 const expectedViewport = Number(process.env.WECHAT_VIEWPORT || 390);
 
 // Opt-in: connect to the actual local WeChat DevTools started in automation mode.
@@ -22,19 +23,7 @@ test(`微信开发者工具：${expectedViewport}px 装载、选词、切换、�
   // getWindowInfo avoids the deprecated getSystemInfoSync automation bridge.
   const system = await mini.evaluate(() => wx.getWindowInfo());
   assert.equal(system.windowWidth, expectedViewport, '实际微信视口必须与验收目标一致，不能以环境变量伪造设备尺寸');
-  let screenshotFailure;
-  async function saveScreenshot(filename) {
-    // After one capture failure, continue the behavioral checks but do not retry.
-    if (screenshotFailure) return;
-    let screenshotTimer;
-    try {
-      await Promise.race([
-        mini.screenshot({ path: path.join(evidenceDir, filename) }),
-        new Promise((_, reject) => { screenshotTimer = setTimeout(() => reject(new Error('微信截图 15 秒内未返回；布局测量已保存，视觉验收未通过')), 15000); }),
-      ]);
-    } catch (error) { screenshotFailure = error; }
-    finally { clearTimeout(screenshotTimer); }
-  }
+  const screenshots = createScreenshotRecorder(mini, evidenceDir);
   async function capture(state, cardSelector) {
     const card = await page.$(cardSelector);
     const image = await page.$('.photo');
@@ -50,7 +39,7 @@ test(`微信开发者工具：${expectedViewport}px 装载、选词、切换、�
       }))),
     };
     fs.writeFileSync(path.join(evidenceDir, `daily1-${state}.json`), JSON.stringify(metrics, null, 2));
-    await saveScreenshot(`daily1-${state}.png`);
+    await screenshots.capture(`daily1-${state}.png`);
     return metrics;
   }
   const initial = await capture('default', '.card-placeholder');
@@ -100,7 +89,7 @@ test(`微信开发者工具：${expectedViewport}px 装载、选词、切换、�
     const closeTop = Number((await (await page.$('.card-close')).offset()).top);
     assert.ok(descriptionTop >= 0 && descriptionTop + Number((await description.size()).height) <= system.windowHeight + 2, '小屏滚动后解释应完整可读');
     assert.ok(closeTop >= 0 && closeTop + 36 <= system.windowHeight + 2, '小屏滚动后关闭按钮应可见');
-    await saveScreenshot('daily1-card-scrolled.png');
+    await screenshots.capture('daily1-card-scrolled.png');
   }
   await (await page.$('.card-close')).tap();
   await mini.pageScrollTo(0);
@@ -110,5 +99,5 @@ test(`微信开发者工具：${expectedViewport}px 装载、选词、切换、�
   assert.equal((await page.$$('.word-label')).length, 4);
   const closed = await capture('closed', '.card-placeholder');
   assert.deepEqual(closed.labels, initial.labels);
-  if (screenshotFailure) throw screenshotFailure;
+  screenshots.assertComplete();
 });

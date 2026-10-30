@@ -1,0 +1,52 @@
+{
+  "viewportWidth": 390,
+  "card": null,
+  "labels": [
+    {
+      "english": "Delphinium",
+      "id": "flower1-v2:0",
+      "color": "rgb(213, 57, 57)",
+      "width": 86,
+      "height": 28,
+      "left": 76.7562484741211,
+      "top": 225.8125
+    },
+    {
+      "english": "Orchid",
+      "id": "flower1-v2:1",
+      "color": "rgb(36, 97, 217)",
+      "width": 57,
+      "height": 28,
+      "left": 100.41875457763672,
+      "top": 390.88751220703125
+    },
+    {
+      "english": "Carnation",
+      "id": "flower1-v2:2",
+      "color": "rgb(18, 130, 71)",
+      "width": 75,
+      "height": 28,
+      "left": 219.0187530517578,
+      "top": 288.1125183105469
+    },
+    {
+      "english": "Alstroemeria",
+      "id": "flower1-v2:3",
+      "color": "rgb(135, 52, 208)",
+      "width": 94,
+      "height": 28,
+      "left": 155.31875610351562,
+      "top": 288.1125183105469
+    },
+    {
+      "english": "Allium",
+      "id": "flower1-v2:4",
+      "color": "rgb(167, 86, 16)",
+      "width": 55,
+      "height": 28,
+      "left": 255.18125915527344,
+      "top": 241.3874969482422
+    }
+  ],
+  "dots": 2
+}

@@ -1,7 +1,7 @@
 export interface RecognizedObject {
   name_en: string;
   name_zh: string;
-  description: string;
+  description?: string;
   bbox: number[];
 }
 
@@ -11,7 +11,8 @@ export interface DemoSample {
   objects: readonly RecognizedObject[];
 }
 
-export type SampleSource = () => Promise<DemoSample>;
+export type SampleId = 'daily1' | 'flower1';
+export type SampleSource = (sampleId: SampleId) => Promise<DemoSample>;
 
 export interface Label {
   id: string;
@@ -23,15 +24,21 @@ export interface Label {
   y: number;
   nearRightEdge: boolean;
   offsetAbove: boolean;
+  expanded: boolean;
 }
 
 export interface ResultData {
   photoSrc: string;
   labels: Label[];
   selected: Label | null;
+  sampleId: SampleId;
 }
 
 export type ResultMethods = {
   onLabelTap(event: WechatMiniprogram.BaseEvent): void;
+  onDotTap(event: WechatMiniprogram.BaseEvent): void;
+  onCollapseLabel(): void;
   onCloseCard(): void;
+  onSwitchSample(): void;
+  loadSample(sampleId: SampleId): void;
 };

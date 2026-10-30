@@ -7,8 +7,9 @@
 -->
 <view class="result-page">
   <view class="photo-stage" wx:if="{{photoSrc}}">
-    <image class="photo" src="{{photoSrc}}" mode="widthFix" aria-label="daily1 原始演示照片" />
+    <image class="photo" src="{{photoSrc}}" mode="widthFix" aria-label="{{sampleId}} 原始演示照片" />
     <block wx:for="{{labels}}" wx:key="id">
+    <block wx:if="{{item.expanded}}">
     <view wx:if="{{item.offsetAbove}}" class="leader" aria-hidden="true"
       style="left: {{item.x}}%; top: {{item.y}}%; background: {{item.color}};" />
     <view wx:if="{{item.offsetAbove}}" class="anchor-pin" aria-hidden="true"
@@ -19,18 +20,25 @@
       aria-label="{{item.english}}，查看词义" bindtap="onLabelTap"
       data-id="{{item.id}}">{{item.english}}</button>
     </block>
+    <view wx:else>
+    <button size="mini" class="discovery-dot" bindtap="onDotTap" aria-label="展开物体 {{index + 1}} 的英文标签"
+      style="left: {{item.x}}%; top: {{item.y}}%; color: {{item.color}};" data-id="{{item.id}}"><view class="dot-core" /></button>
+    </view>
+    </block>
   </view>
 
-  <view class="tap-hint">点标签查看释义</view>
+  <view class="tap-hint">{{sampleId === 'flower1' ? '点圆点展开英文 · 点标签查看释义' : '点标签查看释义'}}</view>
   <view wx:if="{{selected}}" class="meaning-card">
     <button size="mini" class="card-close" bindtap="onCloseCard" aria-label="关闭词卡">×</button>
     <view class="card-english" style="color: {{selected.color}};">{{selected.english}}</view>
     <view class="card-chinese">{{selected.chinese}}</view>
-    <view class="card-description">{{selected.description}}</view>
+    <view wx:if="{{selected.description}}" class="card-description">{{selected.description}}</view>
+    <button size="mini" class="card-collapse" bindtap="onCollapseLabel" style="color: {{selected.color}};">收起标签</button>
   </view>
   <view wx:else class="card-placeholder">
     <view class="placeholder-title">点标签，认识照片里的物品</view>
     <view class="placeholder-copy">点照片中的英文标签，查看中文名称和简短解释。</view>
   </view>
-  <view class="provenance-note">daily1 · 4 项演示 · 适合清晰、彼此分开的日常物体照。未调用识别服务；历史框中心预览，位置尚未验证。</view>
+  <view class="provenance-note">{{sampleId}} · {{labels.length}} 项演示 · {{sampleId === 'flower1' ? '花束仅为交互演示，原始结果未提供简短解释；前五项按原始顺序展示，未实现可靠性排序。' : '适合清晰、彼此分开的日常物体照。'}}未调用识别服务；历史框中心预览，位置尚未验证。</view>
+  <button size="mini" class="choose-sample" bindtap="onSwitchSample">切换体验照片</button>
 </view>

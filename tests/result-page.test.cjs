@@ -106,3 +106,139 @@ test('切换仅保留一张词卡，关闭恢复四个标签的原始颜色', as
   assert.equal(page.querySelectorAll('.word-label--selected').length, 0);
   assert.deepEqual(page.querySelectorAll('.word-label').map((label) => label.dom.getAttribute('style')), defaults);
 });
+
+test('切换到花束演示先显示五个原始英文和两个待展开圆点', async (t) => {
+  const page = await openPage(t);
+  page.querySelector('.choose-sample').dispatchEvent('tap');
+  await simulate.sleep(10);
+  assert.deepEqual(page.querySelectorAll('.word-label').map(label => label.dom.textContent.trim()), [
+    'Delphinium', 'Orchid', 'Carnation', 'Alstroemeria', 'Allium',
+  ]);
+  assert.equal(page.querySelectorAll('.discovery-dot').length, 2);
+  assert.match(page.querySelector('.provenance-note').dom.textContent, /flower1.*7 项/);
+  assert.match(page.querySelector('.provenance-note').dom.textContent, /仅为交互演示/);
+  assert.match(page.querySelector('.provenance-note').dom.textContent, /未提供简短解释/);
+  assert.equal(Boolean(page.querySelector('.meaning-card')), false);
+  assert.doesNotMatch(page.dom.textContent, /更多词汇/);
+});
+
+test('圆点连续展开至七标签，保留原卡片；点新英文才切换词义', async (t) => {
+  const requests = [];
+  const { loadSample } = require('../miniprogram/sample-source');
+  const page = await openPage(t, async id => { requests.push(id); return loadSample(id); });
+  page.querySelector('.choose-sample').dispatchEvent('tap');
+  await simulate.sleep(10);
+  page.querySelectorAll('.discovery-dot')[0].dispatchEvent('tap');
+  await simulate.sleep(5);
+  assert.equal(page.querySelectorAll('.word-label').length, 6);
+  assert.equal(page.querySelectorAll('.discovery-dot').length, 1);
+  assert.equal(Boolean(page.querySelector('.meaning-card')), false);
+  page.querySelectorAll('.word-label').find(label => label.dom.textContent === 'Dahlia').dispatchEvent('tap');
+  await simulate.sleep(5);
+  assert.equal(page.querySelector('.card-english').dom.textContent, 'Dahlia');
+  page.querySelector('.discovery-dot').dispatchEvent('tap');
+  await simulate.sleep(5);
+  assert.equal(page.querySelectorAll('.word-label').length, 7);
+  assert.equal(page.querySelectorAll('.discovery-dot').length, 0);
+  assert.equal(page.querySelector('.card-english').dom.textContent, 'Dahlia');
+  assert.equal(page.querySelector('.word-label--selected').dom.textContent, 'Dahlia');
+  page.querySelectorAll('.word-label').find(label => label.dom.textContent === 'Rose').dispatchEvent('tap');
+  await simulate.sleep(5);
+  assert.equal(page.querySelectorAll('.meaning-card').length, 1);
+  assert.equal(page.querySelector('.card-english').dom.textContent, 'Rose');
+  assert.equal(page.querySelector('.card-chinese').dom.textContent, '玫瑰');
+  assert.equal(Boolean(page.querySelector('.card-description')), false);
+  page.querySelector('.photo-stage').dispatchEvent('tap');
+  await simulate.sleep(5);
+  assert.equal(page.querySelectorAll('.word-label').length, 7);
+  assert.deepEqual(requests, ['daily1', 'flower1']);
+  page.querySelector('.card-close').dispatchEvent('tap');
+  await simulate.sleep(5);
+  assert.equal(page.querySelectorAll('.word-label').length, 7);
+  assert.equal(page.querySelectorAll('.word-label--selected').length, 0);
+});
+
+test('收起只影响当前标签，可全部收起再展开，身份颜色与原始数据不变', async (t) => {
+  const fixturePath = path.resolve(__dirname, '../miniprogram/fixtures/flower1-v2.json');
+  const original = fs.readFileSync(fixturePath);
+  const objects = JSON.parse(original).objects;
+  for (const object of objects) { Object.freeze(object.bbox); Object.freeze(object); }
+  Object.freeze(objects);
+  const { loadSample } = require('../miniprogram/sample-source');
+  const page = await openPage(t, id => id === 'flower1' ? Promise.resolve({ id: 'flower1-v2', photoSrc: '/assets/flower1.jpg', objects }) : loadSample(id));
+  page.querySelector('.choose-sample').dispatchEvent('tap');
+  await simulate.sleep(10);
+  while (page.querySelector('.discovery-dot')) {
+    page.querySelector('.discovery-dot').dispatchEvent('tap');
+    await simulate.sleep(5);
+  }
+  const snapshot = () => page.querySelectorAll('.word-label').map(label => ({
+    id: label.dom.getAttribute('data-id'), english: label.dom.textContent, style: label.dom.getAttribute('style'),
+  }));
+  const initial = snapshot();
+  const rose = page.querySelectorAll('.word-label')[6];
+  rose.dispatchEvent('tap');
+  await simulate.sleep(5);
+  page.querySelector('.card-collapse').dispatchEvent('tap');
+  await simulate.sleep(5);
+  assert.equal(page.querySelectorAll('.word-label').length, 6);
+  assert.equal(page.querySelectorAll('.discovery-dot').length, 1);
+  assert.equal(Boolean(page.querySelector('.meaning-card')), false);
+  assert.deepEqual(snapshot(), initial.slice(0, 6));
+  page.querySelector('.discovery-dot').dispatchEvent('tap');
+  await simulate.sleep(5);
+  assert.equal(Boolean(page.querySelector('.meaning-card')), false);
+  assert.deepEqual(snapshot(), initial);
+  for (let i = 0; i < 7; i++) {
+    page.querySelector('.word-label').dispatchEvent('tap');
+    await simulate.sleep(5);
+    page.querySelector('.card-collapse').dispatchEvent('tap');
+    await simulate.sleep(5);
+    assert.equal(page.querySelectorAll('.word-label').length, 6 - i);
+    assert.equal(page.querySelectorAll('.discovery-dot').length, i + 1);
+  }
+  for (let i = 0; i < 7; i++) {
+    page.querySelector('.discovery-dot').dispatchEvent('tap');
+    await simulate.sleep(5);
+    assert.equal(page.querySelectorAll('.word-label').length, i + 1);
+    assert.equal(Boolean(page.querySelector('.meaning-card')), false);
+  }
+  assert.deepEqual(snapshot(), initial);
+  assert.equal(JSON.stringify(objects), JSON.stringify(JSON.parse(original).objects));
+  assert.deepEqual(fs.readFileSync(fixturePath), original);
+  assert.deepEqual(original, fs.readFileSync(path.resolve(__dirname, '../results/flowers/flower1-v2.json')));
+  assert.deepEqual(require('../miniprogram/fixtures/flower1-v2'), JSON.parse(original));
+  assert.deepEqual(fs.readFileSync(path.resolve(__dirname, '../miniprogram/assets/flower1.jpg')), fs.readFileSync(path.resolve(__dirname, '../images/flower1.jpg')));
+});
+
+test('日常也能收起再展开小物体；切换演示重新初始化各自状态', async (t) => {
+  const page = await openPage(t);
+  page.querySelectorAll('.word-label')[3].dispatchEvent('tap');
+  await simulate.sleep(5);
+  page.querySelector('.card-collapse').dispatchEvent('tap');
+  await simulate.sleep(5);
+  assert.equal(page.querySelectorAll('.leader').length, 0);
+  assert.equal(page.querySelectorAll('.word-label').length, 3);
+  assert.equal(page.querySelectorAll('.discovery-dot').length, 1);
+  page.querySelector('.discovery-dot').dispatchEvent('tap');
+  await simulate.sleep(5);
+  assert.equal(page.querySelectorAll('.leader').length, 1);
+  assert.equal(page.querySelectorAll('.word-label').length, 4);
+  assert.equal(Boolean(page.querySelector('.meaning-card')), false);
+  page.querySelector('.choose-sample').dispatchEvent('tap');
+  await simulate.sleep(10);
+  page.querySelector('.discovery-dot').dispatchEvent('tap');
+  await simulate.sleep(5);
+  page.querySelector('.word-label').dispatchEvent('tap');
+  await simulate.sleep(5);
+  page.querySelector('.choose-sample').dispatchEvent('tap');
+  await simulate.sleep(10);
+  assert.equal(page.querySelectorAll('.word-label').length, 4);
+  assert.equal(page.querySelectorAll('.discovery-dot').length, 0);
+  assert.equal(Boolean(page.querySelector('.meaning-card')), false);
+  page.querySelector('.choose-sample').dispatchEvent('tap');
+  await simulate.sleep(10);
+  assert.equal(page.querySelectorAll('.word-label').length, 5);
+  assert.equal(page.querySelectorAll('.discovery-dot').length, 2);
+  assert.equal(Boolean(page.querySelector('.meaning-card')), false);
+});

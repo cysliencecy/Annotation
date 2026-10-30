@@ -1,10 +1,12 @@
-# daily1 微信小程序
+# 照片探索微信小程序
 
 ## 工程选择
 
 原生 JavaScript + WXML/WXSS，无运行时 npm 依赖。当前单页不需要框架或构建器；JavaScript 用 TypeScript `checkJs` 静态检查。`result-page.js` 通过 `SampleSource` 注入结果来源，正式页面使用 `sample-source.js` 的本地异步来源。
 
-仅实现任务 01：daily1 四个英文标签、单选词义卡、切换和关闭。额外圆点、相册、引线、严格 anchor 校验、碰撞避让、错误恢复由后续任务实现。
+已实现任务 01、02：daily1 四个英文标签，以及 flower1 七项交互演示；支持单选词义卡、关闭保留、圆点展开、收起及再次展开。相册、通用引线、严格 anchor 校验、碰撞避让、错误恢复由后续任务实现。
+
+在词卡下方点击“切换体验照片”切换两个已知样本，重新进入样本会恢复初始展开状态。该按钮不是相册入口，花束仅用于演示超过五项的交互，不扩大日常识别范围。初始五项沿用原 JSON 顺序，不提供可靠性排序；花束没有原始解释字段，因此词卡不补造解释，页面已有披露。
 
 ## 导入运行
 
@@ -23,7 +25,7 @@ npm.cmd test
 npm.cmd run typecheck
 ```
 
-`npm test` 使用 miniprogram-simulate + jsdom 装载真实页面 JS/WXML，触发标签 tap 和关闭，验证装载、单选、内容、切换、恢复颜色、同名对象独立身份和数据不变。替换来源的测试仍使用同一 WXML 和页面工厂。它属于页面行为模拟；不验证微信渲染器、图片解码、布局尺寸或真机触摸。
+`npm test` 使用 miniprogram-simulate + jsdom 装载真实页面 JS/WXML，验证装载、单选、切换、关闭、连续展开、全部收起/重开、同名对象独立身份、颜色稳定和原始数据不变。替换来源的测试仍使用同一 WXML 和页面工厂。它属于页面行为模拟；不验证微信渲染器、图片解码、布局尺寸或真机触摸。
 
 真实微信自动化入口（先在工具中开启服务端口）：
 
@@ -33,7 +35,9 @@ npm.cmd run typecheck
 npm.cmd run test:wechat
 ```
 
-其他机器请替换 CLI 和项目的绝对路径。脚本默认连接 `ws://127.0.0.1:9420`，可通过 `WECHAT_WS` 更改。Node 23 下 automator.launch 直接启动 `.bat` 会失败，所以将 CLI 启动与 WebSocket 连接分开。脚本验证真实页面标签、词卡、关闭及图片显示比例与微信解码的原图比例一致，截图保存到 `.artifacts/`。该入口不包含在默认模拟测试中，需要单独运行。
+其他机器请替换 CLI 和项目的绝对路径。脚本默认连接 `ws://127.0.0.1:9420`，可通过 `WECHAT_WS` 更改。Node 23 下 automator.launch 直接启动 `.bat` 会失败，所以将 CLI 启动与 WebSocket 连接分开。脚本验证真实页面标签、词卡、关闭及图片显示比例与微信解码的原图比例一致，当前截图路径见下方视觉约束。该入口不包含在默认模拟测试中，需要单独运行。
+
+花束流程用 `npm.cmd run test:wechat:exploration` 单独运行，覆盖五标签两圆点、连续展开、两步查看、关闭、全部收起及重开。证据写入 `.scratch/photo-exploration-frontend/evidence/02-<实际视口宽度>/`。原生点击与滚动之间保留渲染等待，不调用页面私有方法代替操作。两个微信入口按顺序运行，避免同时控制同一页面。
 
 人工验收：完整看到原图；四标签默认白底彩字，逐个点击后同色底白字且仅一个选中；词卡对应原始英/中/解释；关闭后四标签恢复；确认无勾选图标和“更多词汇”。视觉和设备触摸仍需人工检查。
 
@@ -41,7 +45,9 @@ npm.cmd run test:wechat
 
 `assets/daily1.jpg` 与原 `images/daily1.jpg` 字节一致；`fixtures/daily1-v2.json` 与原 `results/daily/daily1-v2.json` 字节一致。小程序只读取副本，不改写对象。身份为样本 ID + 记录序号，同名英文不会合并，颜色在本次结果中稳定。
 
-微信运行时不能直接 `require` JSON。正式页面加载已提交的 `fixtures/daily1-v2.js`；它由 `npm.cmd run prepare:demo` 从 JSON 原样生成。首次导入无需生成或构建；只有数据来源变更后才需重新生成。测试验证 JS 模块与 JSON 内容一致，且原始 JSON 与照片的 SHA256 不变。
+微信运行时不能直接 `require` JSON。正式页面加载已提交的 daily1、flower1 JavaScript 数据模块；它们由 `npm.cmd run prepare:demo` 从对应 JSON 原样生成。首次导入无需生成或构建。测试验证 JS 模块与 JSON 内容一致，两张照片和原始结果均保持不变。
+
+花束缩略图中的 Carnation 与 Alstroemeria 仍会发生标签碰撞；该问题已记录，完整避让由任务 05 验收，本次不宣称花束视觉排布完成。
 
 标签位置暂由历史 bbox 中心换算为百分比，图片使用 `widthFix` 等比完整显示；页面明确标出“位置尚未验证”。右侧贴边仅为基本防裁切。视觉修正已加入 daily1 叉子的固定预览偏移与细引线；一般避让、通用引线和严格 anchor 校验仍由后续任务实现。
 
