@@ -1,4 +1,4 @@
-const daily = require('./fixtures/daily1-v2.json');
+const daily = require('./fixtures/daily1-v2');
 
 /**
  * Only this known photo is paired with this historical result.

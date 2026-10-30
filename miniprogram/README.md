@@ -33,13 +33,15 @@ npm.cmd run typecheck
 npm.cmd run test:wechat
 ```
 
-其他机器请替换 CLI 和项目的绝对路径。脚本默认连接 `ws://127.0.0.1:9420`，可通过 `WECHAT_WS` 更改。Node 23 下 automator.launch 直接启动 `.bat` 会失败，所以将 CLI 启动与 WebSocket 连接分开。脚本验证真实页面标签、词卡、关闭及图片 2:3 比例，截图保存到 `.artifacts/`。该入口不包含在默认模拟测试中，需要单独运行。
+其他机器请替换 CLI 和项目的绝对路径。脚本默认连接 `ws://127.0.0.1:9420`，可通过 `WECHAT_WS` 更改。Node 23 下 automator.launch 直接启动 `.bat` 会失败，所以将 CLI 启动与 WebSocket 连接分开。脚本验证真实页面标签、词卡、关闭及图片显示比例与微信解码的原图比例一致，截图保存到 `.artifacts/`。该入口不包含在默认模拟测试中，需要单独运行。
 
 人工验收：完整看到原图；四标签默认白底彩字，逐个点击后同色底白字且仅一个选中；词卡对应原始英/中/解释；关闭后四标签恢复；确认无勾选图标和“更多词汇”。视觉和设备触摸仍需人工检查。
 
 ## 数据与位置
 
 `assets/daily1.jpg` 与原 `images/daily1.jpg` 字节一致；`fixtures/daily1-v2.json` 与原 `results/daily/daily1-v2.json` 字节一致。小程序只读取副本，不改写对象。身份为样本 ID + 记录序号，同名英文不会合并，颜色在本次结果中稳定。
+
+微信运行时不能直接 `require` JSON。正式页面加载已提交的 `fixtures/daily1-v2.js`；它由 `npm.cmd run prepare:demo` 从 JSON 原样生成。首次导入无需生成或构建；只有数据来源变更后才需重新生成。测试验证 JS 模块与 JSON 内容一致，且原始 JSON 与照片的 SHA256 不变。
 
 标签位置暂由历史 bbox 中心换算为百分比，图片使用 `widthFix` 等比完整显示；页面明确标出“位置尚未验证”。右侧贴边仅为基本防裁切，叉子引线及一般避让尚未实现。
 
@@ -50,4 +52,12 @@ npm.cmd run test:wechat
 - `cli.bat open --project ...` 与 `cli.bat islogin` 在连接端口 14487 时失败，完整错误：`× #initialize-error: wait IDE port timeout`。较早初始化还返回 `connect ECONNREFUSED 127.0.0.1:14487`。
 - `miniprogram-automator.launch` 在 Node 23 直接启动 `.bat` 失败：`Error: Failed to launch wechat web devTools, please make sure cliPath is correctly specified`。验收脚本已改为连接模式，规避此启动方式。
 - 连接模式执行 `npm.cmd run test:wechat` 返回：`Error: Failed connecting to ws://127.0.0.1:9420, check if target project window is opened with automation enabled`。
-- 本次没有取得真实微信页面运行或截图证据，任务 01 保留待验收状态，不将模拟测试当成微信验证。
+- 上述是首次连接时的失败记录；随后用户重新开启服务端口，连接已恢复。
+
+### 服务端口恢复后的验证
+
+- `cli.bat islogin` 成功，`login: true`；HTTP 服务端口为 `65074`，`cli.bat auto ... --auto-port 9420` 成功。
+- 空白页复现原因为微信模块加载器不支持直接 require JSON，完整错误：`module 'fixtures/daily1-v2.json.js' is not defined, require args is './fixtures/daily1-v2.json'`。已改为生成并加载 JavaScript 数据模块，原始 JSON 保持不变。
+- 微信开发者工具自动化验收 1/1 通过：daily1 四标签、四个词卡的原始英/中/解释、单选切换、关闭保留标签，以及原图等比显示。
+- 微信解码原图为 `1440×1920`（3:4）；已纠正先前测试对 2:3 的错误假设。
+- 截图：`.artifacts/daily1-default.png`、`.artifacts/daily1-selected.png`。这是微信开发者工具中的运行结果，尚未进行真机验收。

@@ -43,6 +43,7 @@ test('打开日常演示，完整展示四个原始英文和明确的预览说�
 
 test('外部数据中的同名记录可独立选择，操作不改写输入或原始文件', async (t) => {
   const original = fs.readFileSync(path.resolve(__dirname, '../miniprogram/fixtures/daily1-v2.json'));
+  assert.deepEqual(require('../miniprogram/fixtures/daily1-v2'), JSON.parse(original));
   const objects = [
     { name_en: 'cup', name_zh: '红杯', description: '第一只杯子。', bbox: [100, 100, 300, 300] },
     { name_en: 'cup', name_zh: '蓝杯', description: '第二只杯子。', bbox: [600, 600, 800, 800] },

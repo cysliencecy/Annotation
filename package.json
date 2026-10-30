@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
+    "prepare:demo": "node scripts/prepare-demo.cjs",
     "test": "node --test tests/result-page.test.cjs",
     "typecheck": "tsc --noEmit",
     "test:wechat": "node --test tests/wechat.smoke.cjs"

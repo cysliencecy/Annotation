@@ -17,8 +17,9 @@ test('微信开发者工具：装载、选词、切换、关闭与原图比例',
   const photo = await page.$('.photo');
   assert.ok(photo);
   assert.equal(await photo.attribute('mode'), 'widthFix');
+  const original = await mini.callWxMethod('getImageInfo', { src: '/assets/daily1.jpg' });
   const size = await photo.size();
-  assert.ok(Math.abs(size.height / size.width - 1.5) < 0.03, '原图应保持 2:3 比例');
+  assert.ok(Math.abs(size.height / size.width - original.height / original.width) < 0.03, '图片显示比例应与解码后的原图一致');
   const expected = require('../miniprogram/fixtures/daily1-v2.json').objects;
   for (let i = 0; i < labels.length; i++) {
     await labels[i].tap();
