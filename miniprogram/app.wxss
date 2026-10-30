@@ -1,10 +1,10 @@
 page {
   --ink: #242424;
-  --muted: #666e68;
+  --muted: #737373;
   --surface: #ffffff;
-  --subtle: #f3f5f1;
-  --line: #d7ddd7;
-  background: #f7f8f5;
+  --subtle: #f6f6f6;
+  --line: #d8d8d8;
+  background: #ffffff;
   color: var(--ink);
   font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", sans-serif;
   font-size: 14px;

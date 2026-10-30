@@ -1,0 +1,64 @@
+{
+  "viewportWidth": 390,
+  "pixelRatio": 3,
+  "photo": {
+    "left": 20,
+    "top": 0,
+    "width": 350,
+    "height": 467
+  },
+  "card": {
+    "left": 20,
+    "top": 508.7875061035156,
+    "width": 350,
+    "height": 148,
+    "background": "rgb(246, 246, 246)",
+    "border": "rgb(216, 216, 216)"
+  },
+  "labels": [
+    {
+      "text": "plastic cup",
+      "left": 73.04375457763672,
+      "top": 328.2124938964844,
+      "width": 81,
+      "height": 28,
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "color": "rgb(255, 255, 255)",
+      "background": "rgb(213, 57, 57)"
+    },
+    {
+      "text": "glass",
+      "left": 323.0874938964844,
+      "top": 266.07501220703125,
+      "width": 46,
+      "height": 28,
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "color": "rgb(36, 97, 217)",
+      "background": "rgb(255, 255, 255)"
+    },
+    {
+      "text": "napkin",
+      "left": 175.00625610351562,
+      "top": 345.5,
+      "width": 57,
+      "height": 28,
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "color": "rgb(18, 130, 71)",
+      "background": "rgb(255, 255, 255)"
+    },
+    {
+      "text": "fork",
+      "left": 250.375,
+      "top": 44.337501525878906,
+      "width": 41,
+      "height": 28,
+      "fontSize": "12px",
+      "lineHeight": "16px",
+      "color": "rgb(135, 52, 208)",
+      "background": "rgb(255, 255, 255)"
+    }
+  ]
+}

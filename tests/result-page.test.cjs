@@ -36,6 +36,9 @@ test('打开日常演示，完整展示四个原始英文和明确的预览说�
   assert.match(page.dom.textContent, /清晰、彼此分开/);
   assert.equal(Boolean(page.querySelector('.meaning-card')), false);
   assert.ok(page.querySelector('.photo'));
+  assert.equal(Boolean(page.querySelector('.intro')), false);
+  assert.equal(page.querySelector('.placeholder-title').dom.textContent, '点标签，认识照片里的物品');
+  assert.equal(page.querySelectorAll('.leader').length, 1);
   // The simulator cannot verify image decoding; preserve the original photo bytes.
   const photo = fs.readFileSync(path.resolve(__dirname, '../miniprogram/assets/daily1.jpg'));
   assert.equal(createHash('sha256').update(photo).digest('hex'), '4ff06acc88f5201e31ffb0549adb0728e18d6fb986c821b89de8f2f4e8c194e6');
@@ -75,6 +78,7 @@ test('点击标签显示对应词卡和同色选中样式', async (t) => {
   await simulate.sleep(10);
   const card = page.querySelector('.meaning-card');
   assert.ok(card);
+  assert.equal(page.querySelector('.card-close').dom.textContent, '×');
   assert.match(card.dom.textContent, /plastic cup/);
   assert.match(card.dom.textContent, /塑料杯/);
   assert.match(card.dom.textContent, /用于盛装饮料的塑料容器。/);

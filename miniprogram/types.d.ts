@@ -22,6 +22,7 @@ export interface Label {
   x: number;
   y: number;
   nearRightEdge: boolean;
+  offsetAbove: boolean;
 }
 
 export interface ResultData {

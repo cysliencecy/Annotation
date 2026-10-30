@@ -1,34 +1,45 @@
-.result-page { padding: 24px 16px 32px; }
-.intro { margin-bottom: 16px; }
-.eyebrow { font-size: 12px; font-weight: 600; color: var(--muted); }
-.page-heading { margin-top: 4px; font-size: 24px; font-weight: 700; }
-.scope-note { margin-top: 8px; font-size: 12px; color: var(--muted); }
+/* §2.1 photo first; §3.2/§4.1 values follow the accepted prototype. */
+.result-page {
+  --label-size: 12px;
+  --label-line: 16px;
+  --label-radius: 5px;
+  --card-title-size: 17px;
+  --card-radius: 8px;
+  padding: 0 20px 24px;
+}
 .photo-stage { position: relative; border-radius: 16px; overflow: hidden; background: var(--subtle); }
 .photo { display: block; width: 100%; }
+/* §8.6 reset native defaults, including size=mini padding. */
 .word-label {
   position: absolute;
-  z-index: 1;
-  transform: translate(-50%, -50%);
-  padding: 5px 8px;
-  margin: 0;
+  z-index: 2;
+  display: inline-block;
+  box-sizing: border-box;
+  width: auto;
   min-width: 0;
+  max-width: calc(100% - 2px);
+  height: auto;
+  transform: translate(-50%, -50%);
+  padding: 5px 7px !important;
+  margin: 0;
   border: 1px solid;
-  border-radius: 8px;
+  border-radius: var(--label-radius);
   background: var(--surface);
-  font-size: 12px;
+  font-size: var(--label-size) !important;
   font-weight: 600;
-  line-height: 16px;
+  line-height: var(--label-line) !important;
   white-space: nowrap;
 }
-.word-label--right { left: auto !important; right: 0; transform: translateY(-50%); }
-.photo-caption { margin-top: 12px; font-size: 12px; font-weight: 600; }
-.tap-hint { margin: 8px 0 16px; color: var(--muted); font-size: 12px; }
-.card-placeholder { padding: 16px; min-height: 96px; border-radius: 8px; background: var(--surface); }
-.placeholder-title { font-size: 16px; font-weight: 600; }
-.placeholder-copy { margin-top: 8px; font-size: 14px; color: var(--muted); }
-.provenance-note { margin-top: 24px; font-size: 12px; color: var(--muted); }
-.meaning-card { position: relative; padding: 16px; border: 1px solid; border-radius: 8px; background: var(--surface); }
-.card-english { font-size: 24px; font-weight: 700; padding-right: 48px; }
-.card-chinese { margin-top: 8px; font-size: 16px; font-weight: 600; }
-.card-description { margin-top: 8px; color: var(--muted); font-size: 14px; }
-.card-close { position: absolute; top: 8px; right: 8px; padding: 8px; margin: 0; background: var(--subtle); color: var(--ink); font-size: 12px; line-height: 24px; border-radius: 8px; }
+.word-label--right { left: auto !important; right: 1px; transform: translateY(-50%); }
+.word-label--above { transform: translate(-50%, calc(-100% - 26px)); }
+.leader { position: absolute; z-index: 1; width: 1.5px; height: 26px; transform: translate(-50%, -100%); pointer-events: none; }
+.anchor-pin { position: absolute; z-index: 1; width: 6px; height: 6px; box-sizing: border-box; border: 1px solid white; border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+.tap-hint { margin: 12px 0; color: var(--muted); font-size: 11px; line-height: 18px; }
+.meaning-card, .card-placeholder { position: relative; box-sizing: border-box; min-height: 148px; padding: 16px; border: 1px solid var(--line); border-radius: var(--card-radius); background: var(--subtle); }
+.placeholder-title, .card-english { font-size: var(--card-title-size); line-height: 24px; font-weight: 700; }
+.card-english { margin: 0 30px 8px 0; }
+.placeholder-copy { margin-top: 8px; font-size: 12px; line-height: 20px; color: var(--muted); }
+.card-chinese { margin: 3px 0 8px; font-size: 14px; line-height: 21px; font-weight: 600; }
+.card-description { font-size: 12px; line-height: 20px; color: var(--muted); }
+.card-close { position: absolute; right: 8px; top: 6px; display: block; box-sizing: border-box; width: 36px !important; min-width: 0; height: 36px !important; padding: 0 !important; margin: 0; border: 0; background: transparent; color: var(--muted); font-size: 25px !important; font-weight: 400; line-height: 36px !important; }
+.provenance-note { margin-top: 16px; color: var(--muted); font-size: 11px; line-height: 18px; }

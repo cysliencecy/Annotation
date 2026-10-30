@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>daily1 原型与微信视觉对照</title>
+<style>
+*{box-sizing:border-box}body{margin:0;padding:24px;background:#edf1ee;color:#242424;font:14px/1.6 system-ui,"Microsoft YaHei",sans-serif}main{max-width:1000px;margin:auto}h1{font-size:24px}nav{display:flex;gap:8px;margin:20px 0}button{padding:8px 16px;border:1px solid #cbd4ce;border-radius:8px;background:white;font:inherit;cursor:pointer}button[aria-pressed=true]{background:#244f3b;color:white}.pair{display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap}.panel{width:390px;max-width:100%}h2{font-size:16px}.frame{width:390px;max-width:100%;aspect-ratio:390/657;overflow:hidden;background:white;border-radius:8px}.frame img{display:block;width:100%;height:auto}.pending{padding:24px;color:#737373}p{max-width:850px}.note{color:#53625b;font-size:12px}a{color:#2461d9}
+</style>
+<main>
+<h1>daily1 原型与微信视觉对照</h1>
+<p>统一按 390 CSS px 显示照片至词义卡区域。左侧来自已确认的浏览器临时原型，右侧仅展示实际取得的微信截图；不会用模拟页面填补缺失截图。</p>
+<nav aria-label="比较状态"><button data-state="default" aria-pressed="true">默认</button><button data-state="selected" aria-pressed="false">选中 plastic cup</button><button data-state="closed" aria-pressed="false">关闭恢复</button></nav>
+<div class="pair">
+<section class="panel"><h2>原型基准</h2><div class="frame"><img id="baseline" src="baselines/daily1-default.png" alt="原型状态截图"></div></section>
+<section class="panel"><h2>微信实际画面</h2><div class="frame" id="actual-frame"><img id="actual" alt="微信实际状态截图"><p class="pending" id="pending" hidden>当前状态尚未取得微信截图，视觉验收待完成。页面布局测量记录可在 evidence 目录查看。</p></div></section>
+</div>
+<p class="note">微信截图自身的像素密度可能不同，显示宽度统一为 390 CSS px。系统导航和安全区不纳入比较；词卡下方的演示说明不在当前裁切区域。小程序当前未实现圆点、收起和选图，因此相关文案与按钮属于已记录的阶段差异。</p>
+<p><a href="spec.md">视觉规格</a> · <a href="acceptance.md">验收记录与差异</a></p>
+</main>
+<script>
+const baseline=document.querySelector('#baseline'),actual=document.querySelector('#actual'),pending=document.querySelector('#pending');
+actual.onerror=()=>{actual.hidden=true;pending.hidden=false};actual.onload=()=>{actual.hidden=false;pending.hidden=true};
+function show(state){baseline.src=`baselines/daily1-${state}.png`;actual.hidden=true;pending.hidden=true;actual.src=`evidence/daily1-${state}.png`;document.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.state===state)))}
+document.querySelectorAll('button').forEach(b=>b.onclick=()=>show(b.dataset.state));show('default');
+</script>
+</html>

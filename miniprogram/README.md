@@ -43,7 +43,11 @@ npm.cmd run test:wechat
 
 微信运行时不能直接 `require` JSON。正式页面加载已提交的 `fixtures/daily1-v2.js`；它由 `npm.cmd run prepare:demo` 从 JSON 原样生成。首次导入无需生成或构建；只有数据来源变更后才需重新生成。测试验证 JS 模块与 JSON 内容一致，且原始 JSON 与照片的 SHA256 不变。
 
-标签位置暂由历史 bbox 中心换算为百分比，图片使用 `widthFix` 等比完整显示；页面明确标出“位置尚未验证”。右侧贴边仅为基本防裁切，叉子引线及一般避让尚未实现。
+标签位置暂由历史 bbox 中心换算为百分比，图片使用 `widthFix` 等比完整显示；页面明确标出“位置尚未验证”。右侧贴边仅为基本防裁切。视觉修正已加入 daily1 叉子的固定预览偏移与细引线；一般避让、通用引线和严格 anchor 校验仍由后续任务实现。
+
+## 视觉还原约束
+
+当前页面按[视觉规格](../.scratch/prototype-visual-fidelity/spec.md)还原已有 daily1 原型。默认、选中、关闭截图和布局测量统一写入 `.scratch/prototype-visual-fidelity/evidence/`；[验收记录](../.scratch/prototype-visual-fidelity/acceptance.md)说明结果与未完成项，[对照页](../.scratch/prototype-visual-fidelity/comparison.html)可并排查看原型与实际截图。较早 `.artifacts/` 截图属于修正前证据，不代表当前页面。
 
 ## 本次验证记录（2026-10-30）
 

@@ -14,6 +14,50 @@ test('微信开发者工具：装载、选词、切换、关闭与原图比例',
   await page.waitFor('.word-label');
   const labels = await page.$$('.word-label');
   assert.deepEqual(await Promise.all(labels.map((label) => label.text())), ['plastic cup', 'glass', 'napkin', 'fork']);
+  const evidenceDir = path.resolve(__dirname, '../.scratch/prototype-visual-fidelity/evidence');
+  fs.mkdirSync(evidenceDir, { recursive: true });
+  // getWindowInfo avoids the deprecated getSystemInfoSync automation bridge.
+  const system = await mini.evaluate(() => wx.getWindowInfo());
+  assert.equal(system.windowWidth, 390, '视觉对照入口需要将微信模拟器设为 390 CSS px，与保存的基准一致');
+  let screenshotFailure;
+  async function capture(state, cardSelector) {
+    const card = await page.$(cardSelector);
+    const image = await page.$('.photo');
+    const metrics = {
+      viewportWidth: system.windowWidth,
+      pixelRatio: system.pixelRatio,
+      photo: { ...await image.offset(), ...await image.size() },
+      card: { ...await card.offset(), ...await card.size(), background: await card.style('background-color'), border: await card.style('border-top-color') },
+      labels: await Promise.all(labels.map(async label => ({
+        text: await label.text(), ...await label.offset(), ...await label.size(),
+        fontSize: await label.style('font-size'), lineHeight: await label.style('line-height'),
+        color: await label.style('color'), background: await label.style('background-color'),
+      }))),
+    };
+    fs.writeFileSync(path.join(evidenceDir, `daily1-${state}.json`), JSON.stringify(metrics, null, 2));
+    // Keep checking interactions and saving measurements after one capture failure.
+    // The test still fails below; no subsequent screenshot retries in this run.
+    if (!screenshotFailure) {
+      let screenshotTimer;
+      try {
+        await Promise.race([
+          mini.screenshot({ path: path.join(evidenceDir, `daily1-${state}.png`) }),
+          new Promise((_, reject) => { screenshotTimer = setTimeout(() => reject(new Error('微信截图 15 秒内未返回；布局测量已保存，视觉验收未通过')), 15000); }),
+        ]);
+      } catch (error) { screenshotFailure = error; }
+      finally { clearTimeout(screenshotTimer); }
+    }
+    return metrics;
+  }
+  const initial = await capture('default', '.card-placeholder');
+  assert.ok(Math.abs(Number(initial.photo.width) - (system.windowWidth - 40)) <= 2, '照片左右各保留 20px');
+  assert.ok(Math.abs(Number(initial.photo.left) - 20) <= 2);
+  assert.equal(initial.labels.every(label => label.fontSize === '12px'), true, '标签字号沿用原型');
+  assert.ok(Number(initial.labels[3].width) < Number(initial.labels[0].width), '标签根据英文长度收缩');
+  assert.ok(Number(initial.labels[0].width) < 110, '不允许微信默认长条标签');
+  assert.ok(Math.abs(Number(initial.card.height) - 148) <= 2, '引导卡高度与原型一致');
+  assert.match(initial.card.background.replace(/\s/g, ''), /rgb\(246,246,246\)/);
+  assert.equal((await page.$$('.leader')).length, 1);
   const photo = await page.$('.photo');
   assert.ok(photo);
   assert.equal(await photo.attribute('mode'), 'widthFix');
@@ -29,13 +73,23 @@ test('微信开发者工具：装载、选词、切换、关闭与原图比例',
     assert.equal(await (await page.$('.card-english')).text(), expected[i].name_en);
     assert.equal(await (await page.$('.card-chinese')).text(), expected[i].name_zh);
     assert.equal(await (await page.$('.card-description')).text(), expected[i].description);
+    if (i === 0) {
+      const selected = await capture('selected', '.meaning-card');
+      assert.equal(selected.card.background, initial.card.background);
+      assert.equal(selected.card.border, initial.card.border);
+      const close = await page.$('.card-close');
+      assert.equal(await close.text(), '×');
+      assert.equal(Number((await close.size()).width), 36);
+      assert.equal(await (await page.$('.card-english')).style('font-size'), '17px');
+      for (let j = 0; j < labels.length; j++) assert.ok(Math.abs(Number(selected.labels[j].width) - Number(initial.labels[j].width)) <= 1);
+    }
   }
-  fs.mkdirSync(path.resolve(__dirname, '../.artifacts'), { recursive: true });
-  await mini.screenshot({ path: path.resolve(__dirname, '../.artifacts/daily1-selected.png') });
   await (await page.$('.card-close')).tap();
   await page.waitFor(200);
   assert.equal((await page.$$('.meaning-card')).length, 0);
   assert.equal((await page.$$('.word-label--selected')).length, 0);
   assert.equal((await page.$$('.word-label')).length, 4);
-  await mini.screenshot({ path: path.resolve(__dirname, '../.artifacts/daily1-default.png') });
+  const closed = await capture('closed', '.card-placeholder');
+  assert.deepEqual(closed.labels, initial.labels);
+  if (screenshotFailure) throw screenshotFailure;
 });

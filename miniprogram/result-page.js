@@ -31,6 +31,8 @@ function createResultPage(source = loadDailySample) {
             x: (object.bbox[0] + object.bbox[2]) / 20,
             y: (object.bbox[1] + object.bbox[3]) / 20,
             nearRightEdge: (object.bbox[0] + object.bbox[2]) / 2 > 900,
+            // Presentation offset from the daily1 preview; never replaces raw coordinates.
+            offsetAbove: sample.id === 'daily1-v2' && index === 3,
           }));
           this.setData({ photoSrc: sample.photoSrc, labels });
         });
