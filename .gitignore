@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.archive/
+node_modules/
+.artifacts/
+project.private.config.json

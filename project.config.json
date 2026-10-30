@@ -1,0 +1,12 @@
+{
+  "appid": "touristappid",
+  "projectname": "photo-english",
+  "miniprogramRoot": "miniprogram/",
+  "compileType": "miniprogram",
+  "libVersion": "3.10.3",
+  "setting": {
+    "es6": true,
+    "minified": true,
+    "postcss": true
+  }
+}

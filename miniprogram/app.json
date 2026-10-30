@@ -1,0 +1,10 @@
+{
+  "pages": ["pages/result/index"],
+  "window": {
+    "navigationBarTitleText": "识图结果",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f7f8f5"
+  },
+  "style": "v2"
+}

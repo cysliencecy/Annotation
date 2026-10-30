@@ -1,0 +1,36 @@
+<!--
+  Hierarchy: photo and its English labels > word card > scope/provenance notes.
+  The label is the primary interaction. No inactive album or retry controls in task 01.
+  Scale: spacing 4/8/12/16/24/32; text 12/14/16/24; radius 8/16.
+  Palette follows the accepted preview; neutral tokens live in app.wxss.
+-->
+<view class="result-page">
+  <view class="intro">
+    <text class="eyebrow">相册学英语 · 演示</text>
+    <view class="page-heading">认识照片里的物品</view>
+    <view class="scope-note">适合清晰、彼此分开的日常物体照</view>
+  </view>
+
+  <view class="photo-stage" wx:if="{{photoSrc}}">
+    <image class="photo" src="{{photoSrc}}" mode="widthFix" aria-label="daily1 原始演示照片" />
+    <button wx:for="{{labels}}" wx:key="id"
+      class="word-label {{item.nearRightEdge ? 'word-label--right' : ''}} {{selected.id === item.id ? 'word-label--selected' : ''}}"
+      style="left: {{item.x}}%; top: {{item.y}}%; color: {{selected.id === item.id ? '#fff' : item.color}}; background: {{selected.id === item.id ? item.color : '#fff'}}; border-color: {{item.color}};"
+      aria-label="{{item.english}}，查看词义" bindtap="onLabelTap"
+      data-id="{{item.id}}">{{item.english}}</button>
+  </view>
+
+  <view class="photo-caption">daily1 · 预置演示 · {{labels.length}} 个词</view>
+  <view class="tap-hint">点英文标签，查看中文含义</view>
+  <view wx:if="{{selected}}" class="meaning-card" style="border-color: {{selected.color}};">
+    <button class="card-close" bindtap="onCloseCard" aria-label="关闭词卡">关闭</button>
+    <view class="card-english" style="color: {{selected.color}};">{{selected.english}}</view>
+    <view class="card-chinese">{{selected.chinese}}</view>
+    <view class="card-description">{{selected.description}}</view>
+  </view>
+  <view wx:else class="card-placeholder">
+    <view class="placeholder-title">想认识哪个物品？</view>
+    <view class="placeholder-copy">轻点照片中的英文，认识它的中文名称。</view>
+  </view>
+  <view class="provenance-note">示例结果，未调用识别服务。指向点采用历史框中心预览，尚未验证。</view>
+</view>
