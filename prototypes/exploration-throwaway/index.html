@@ -1,0 +1,11 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>照片探索 · 临时交互预览</title>
+<link rel="stylesheet" href="style.css">
+<body>
+<aside class="preview-tools"><strong>临时交互预览</strong><div class="switcher"><button data-sample="daily1" class="active">日常 · 4 项</button><button data-sample="flower1">花束 · 7 项</button><button id="reset">重新体验</button></div><p>体验已确定的方案：点标签看释义 → 收起标签 → 点圆点展开 → 再点标签看释义。</p><p id="state" aria-live="polite"></p><small>使用真实照片和原始模型名称。点位沿用历史 bbox 中心，尚未验证；花束仅用于超过 5 项的交互演示。预览不调用识别模型，也不保存数据。</small></aside>
+<main class="phone"><div class="status"><b>9:41</b><span>▥　▰</span></div><header><span>‹</span><strong>识图结果</strong><span class="capsule">•••　◉</span></header><div class="content"><div id="photo-wrap"><img id="photo" alt="用于学习物品英文名的原始照片"><svg id="leaders" aria-hidden="true"></svg><div id="labels"></div></div><p class="hint">点圆点展开英文 · 点标签查看释义</p><section id="card" aria-live="polite"></section><button class="choose" id="choose">切换体验照片</button></div><div class="home"></div></main>
+<script src="data.js"></script><script src="app.js"></script>
+</body></html>

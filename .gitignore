@@ -4,3 +4,9 @@ __pycache__/
 node_modules/
 .artifacts/
 project.private.config.json
+.mcp.json
+debug.log
+.env
+.env.*
+!.env.example
+~$*

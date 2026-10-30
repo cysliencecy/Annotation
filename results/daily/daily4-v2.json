@@ -1,0 +1,1 @@
+{"objects":[{"name_zh":"狗","name_en":"dog","description":"一种常见的家养动物。","bbox":[0,130,850,680]},{"name_zh":"牵引绳","name_en":"leash","description":"连接宠物与主人的绳状物品。","bbox":[440,410,545,999]},{"name_zh":"背带","name_en":"harness","description":"宠物身上用于牵引的带状物品。","bbox":[380,260,610,440]}]}

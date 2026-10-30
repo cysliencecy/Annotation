@@ -1,0 +1,1 @@
+{"objects":[{"name_zh":"杯子","name_en":"cup","description":"用于盛放液体的容器。","bbox":[180,570,660,840]},{"name_zh":"碟子","name_en":"saucer","description":"放置杯子的浅盘。","bbox":[40,690,670,920]},{"name_zh":"花瓶","name_en":"vase","description":"用于插花的容器。","bbox":[420,270,570,420]},{"name_zh":"花","name_en":"flower","description":"植物的繁殖器官，通常有花瓣。","bbox":[320,150,640,340]}]}
